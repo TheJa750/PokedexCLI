@@ -1,5 +1,12 @@
 package main
 
+import (
+	"fmt"
+	"os"
+
+	"github.com/TheJa750/pokedexcli/internal/pokeapi"
+)
+
 type cliCommand struct {
 	name        string
 	description string
@@ -7,8 +14,9 @@ type cliCommand struct {
 }
 
 type Config struct {
-	Next     *string
-	Previous *string
+	pokeapiClient pokeapi.Client
+	Next          *string
+	Previous      *string
 }
 
 var commands map[string]cliCommand
@@ -36,4 +44,22 @@ func initCommands() {
 			callback:    commandMapb,
 		},
 	}
+}
+
+func commandExit(cfg *Config) error {
+	fmt.Println("Closing the Pokedex... Goodbye!")
+	os.Exit(0)
+	return nil
+}
+
+func commandHelp(cfg *Config) error {
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Usage:")
+	fmt.Println("")
+
+	for _, v := range commands {
+		fmt.Printf("%s: %s\n", v.name, v.description)
+	}
+
+	return nil
 }
