@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/TheJa750/pokedexcli/internal/pokeapi"
+	"github.com/TheJa750/pokedexcli/internal/pokecache"
 )
 
 type cliCommand struct {
@@ -17,6 +18,7 @@ type Config struct {
 	pokeapiClient pokeapi.Client
 	Next          *string
 	Previous      *string
+	Cache         *pokecache.Cache
 }
 
 var commands map[string]cliCommand
