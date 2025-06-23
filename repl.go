@@ -19,9 +19,17 @@ func startRepl(cfg *Config) {
 			if !ok {
 				fmt.Println("Unknown command")
 			} else {
-				err := command.callback(cfg)
-				if err != nil {
-					fmt.Println(err)
+				if clean[0] == "explore" && len(clean) >= 2 {
+					fmt.Printf("DEBUG: Calling commandExplore with %s area", clean[1])
+					err := command.callback(cfg, clean[1])
+					if err != nil {
+						fmt.Println(err)
+					}
+				} else {
+					err := command.callback(cfg, "")
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
 			}
 		}
@@ -39,6 +47,13 @@ func cleanInput(text string) []string {
 			strs = append(strs, first[i])
 		}
 	}
+
+	/*
+		//Debugging input
+		for _, str := range strs {
+			println(str)
+		}
+	*/
 
 	return strs
 }

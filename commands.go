@@ -11,7 +11,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *Config) error
+	callback    func(cfg *Config, area string) error
 }
 
 type Config struct {
@@ -45,16 +45,21 @@ func initCommands() {
 			description: "Display the names of previous 20 location areas",
 			callback:    commandMapb,
 		},
+		"explore": {
+			name:        "explore <area_name>",
+			description: "Display the names of pokemon encounters in an area",
+			callback:    commandExplore,
+		},
 	}
 }
 
-func commandExit(cfg *Config) error {
+func commandExit(cfg *Config, area string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(cfg *Config) error {
+func commandHelp(cfg *Config, area string) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println("")

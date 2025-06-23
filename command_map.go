@@ -8,7 +8,7 @@ import (
 	"github.com/TheJa750/pokedexcli/internal/pokeapi"
 )
 
-func commandMap(cfg *Config) error {
+func commandMap(cfg *Config, area string) error {
 	// call map function in api package "https://pokeapi.co/api/v2/location-area"
 	//fmt.Println("DEBUG: commandMap started")
 	//fmt.Printf("DEBUG: cfg.Next = %v\n", cfg.Next)
@@ -59,7 +59,7 @@ func commandMap(cfg *Config) error {
 	return nil
 }
 
-func commandMapb(cfg *Config) error {
+func commandMapb(cfg *Config, area string) error {
 	if cfg.Previous == nil {
 		return errors.New("you're on the first page")
 	}
@@ -93,6 +93,44 @@ func commandMapb(cfg *Config) error {
 
 	for _, area := range loc.Results {
 		fmt.Println(area.Name)
+	}
+
+	return nil
+}
+
+func commandExplore(cfg *Config, area string) error {
+	if area == "" {
+		return errors.New("invalid location")
+	}
+	callAPI := true
+	var pokemon pokeapi.AreaPokemon
+	var err error
+
+	data, exists := cfg.Cache.Get(area)
+	if exists {
+		err = json.Unmarshal(data, &pokemon)
+		if err == nil {
+			callAPI = false
+		}
+	}
+
+	if callAPI {
+		pokemon, err = cfg.pokeapiClient.ExploreArea(area)
+		if err != nil {
+			return err
+		}
+		data, err := json.Marshal(pokemon)
+		if err != nil {
+			return err
+		}
+		cfg.Cache.Add(area, data)
+	}
+
+	fmt.Printf("Exploring %s...\n", area)
+	fmt.Println("Found Pokemon:")
+
+	for _, mon := range pokemon.PokemonEncounters {
+		fmt.Printf("- %s\n", mon.Pokemon.Name)
 	}
 
 	return nil
