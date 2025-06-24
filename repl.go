@@ -26,6 +26,9 @@ func startRepl(cfg *Config) {
 				if clean[0] == "catch" && len(clean) >= 2 {
 					multiArgs = true
 				}
+				if clean[0] == "inspect" && len(clean) >= 2 {
+					multiArgs = true
+				}
 
 				if multiArgs {
 					//fmt.Printf("DEBUG: Calling commandExplore with %s area", clean[1])

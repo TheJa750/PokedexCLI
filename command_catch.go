@@ -14,12 +14,12 @@ func commandCatch(cfg *Config, target string) error {
 		return errors.New("invalid pokemon")
 	}
 
-	/*
+	if cfg.SeeBeforeCatch {
 		_, exists := cfg.Pokedex[target]
 		if !exists {
 			return fmt.Errorf("you have not found a %s anywhere", target)
 		}
-	*/
+	}
 
 	callAPI := true
 	var pokemonInfo pokeapi.CatchPokemonInfo
@@ -29,7 +29,7 @@ func commandCatch(cfg *Config, target string) error {
 	data, exists := cfg.Cache.Get(target)
 	if exists {
 		err := json.Unmarshal(data, &pokemonInfo)
-		if err != nil {
+		if err == nil {
 			callAPI = false
 		}
 	}
@@ -49,9 +49,21 @@ func commandCatch(cfg *Config, target string) error {
 
 	fmt.Printf("Throwing a Pokeball at %s...\n", target)
 
-	chance := rand.Intn(pokemonInfo.BaseExperience)
+	exp := pokemonInfo.BaseExperience
+	chance := rand.Intn(exp)
+	var req int
 
-	if chance < 25 {
+	if exp < 75 {
+		req = 25
+	} else if exp < 150 {
+		req = 35
+	} else if exp < 250 {
+		req = 55
+	} else {
+		req = 75
+	}
+
+	if chance < req {
 		writePokeInfo(&info, pokemonInfo)
 		fmt.Printf("%s was caught!\n", target)
 		addToDex(cfg, target, info)
@@ -71,11 +83,31 @@ func addToDex(cfg *Config, name string, info PokeInfo) {
 	}
 
 	cfg.Pokedex[name] = updated
-	fmt.Printf("%s was added to the Pokedex", name)
+	fmt.Printf("%s was added to the Pokedex\n", name)
 }
 
 func writePokeInfo(writeInfo *PokeInfo, readInfo pokeapi.CatchPokemonInfo) {
 	writeInfo.Height = readInfo.Height
 	writeInfo.Weight = readInfo.Weight
-	//writeInfo.Stats.attack = readInfo.Stats
+
+	for _, stat := range readInfo.Stats {
+		switch stat.Stat.Name {
+		case "attack":
+			writeInfo.Stats.attack = stat.BaseStat
+		case "hp":
+			writeInfo.Stats.hp = stat.BaseStat
+		case "defense":
+			writeInfo.Stats.defense = stat.BaseStat
+		case "special-attack":
+			writeInfo.Stats.specAtk = stat.BaseStat
+		case "special-defense":
+			writeInfo.Stats.specDef = stat.BaseStat
+		case "speed":
+			writeInfo.Stats.speed = stat.BaseStat
+		}
+	}
+
+	for _, elem := range readInfo.Types {
+		writeInfo.Typing = append(writeInfo.Typing, elem.Type.Name)
+	}
 }

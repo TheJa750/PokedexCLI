@@ -31,13 +31,23 @@ func initCommands() {
 		},
 		"explore": {
 			name:        "explore <area_name>",
-			description: "Display the names of pokemon encounters in an area",
+			description: "Display the names of Pokemon encounters in an area",
 			callback:    commandExplore,
 		},
 		"catch": {
 			name:        "catch <pokemon_name>",
-			description: "Attempts to catch a pokemon",
+			description: "Attempts to catch a Pokemon",
 			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect <pokemon_name>",
+			description: "Inspects a captured Pokemon",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Lists all captured pokemon and total number seen/caught",
+			callback:    commandPokedex,
 		},
 	}
 }

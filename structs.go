@@ -8,15 +8,16 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *Config, area string) error
+	callback    func(cfg *Config, target string) error
 }
 
 type Config struct {
-	pokeapiClient pokeapi.Client
-	Next          *string
-	Previous      *string
-	Cache         *pokecache.Cache
-	Pokedex       map[string]Pokemon
+	pokeapiClient  pokeapi.Client
+	Next           *string
+	Previous       *string
+	Cache          *pokecache.Cache
+	Pokedex        map[string]Pokemon
+	SeeBeforeCatch bool
 }
 
 type PokeInfo struct {

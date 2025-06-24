@@ -10,12 +10,15 @@ import (
 func main() {
 	initCommands()
 	cfg := &Config{
-		pokeapiClient: pokeapi.NewClient(5 * time.Second),
-		Next:          nil,
-		Previous:      nil,
-		Cache:         pokecache.NewCache(15 * time.Minute),
-		Pokedex:       make(map[string]Pokemon),
+		pokeapiClient:  pokeapi.NewClient(5 * time.Second),
+		Next:           nil,
+		Previous:       nil,
+		Cache:          pokecache.NewCache(15 * time.Minute),
+		Pokedex:        make(map[string]Pokemon),
+		SeeBeforeCatch: true,
 	}
+
+	commandHelp(cfg, "")
 
 	startRepl(cfg)
 }
