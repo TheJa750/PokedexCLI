@@ -37,7 +37,6 @@ func commandMap(cfg *Config, area string) error {
 		//fmt.Printf("DEBUG: Got %d results from API\n", len(loc.Results))
 		data, err := json.Marshal(loc)
 		if err != nil {
-
 			return err
 		}
 		if cfg.Next != nil {
@@ -131,6 +130,14 @@ func commandExplore(cfg *Config, area string) error {
 
 	for _, mon := range pokemon.PokemonEncounters {
 		fmt.Printf("- %s\n", mon.Pokemon.Name)
+		_, exists := cfg.Pokedex[mon.Pokemon.Name]
+		if !exists {
+			cfg.Pokedex[mon.Pokemon.Name] = Pokemon{
+				Name:   mon.Pokemon.Name,
+				Seen:   true,
+				Caught: false,
+			}
+		}
 	}
 
 	return nil

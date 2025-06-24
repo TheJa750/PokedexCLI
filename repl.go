@@ -19,8 +19,16 @@ func startRepl(cfg *Config) {
 			if !ok {
 				fmt.Println("Unknown command")
 			} else {
+				multiArgs := false
 				if clean[0] == "explore" && len(clean) >= 2 {
-					fmt.Printf("DEBUG: Calling commandExplore with %s area", clean[1])
+					multiArgs = true
+				}
+				if clean[0] == "catch" && len(clean) >= 2 {
+					multiArgs = true
+				}
+
+				if multiArgs {
+					//fmt.Printf("DEBUG: Calling commandExplore with %s area", clean[1])
 					err := command.callback(cfg, clean[1])
 					if err != nil {
 						fmt.Println(err)

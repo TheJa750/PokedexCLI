@@ -3,23 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-
-	"github.com/TheJa750/pokedexcli/internal/pokeapi"
-	"github.com/TheJa750/pokedexcli/internal/pokecache"
 )
-
-type cliCommand struct {
-	name        string
-	description string
-	callback    func(cfg *Config, area string) error
-}
-
-type Config struct {
-	pokeapiClient pokeapi.Client
-	Next          *string
-	Previous      *string
-	Cache         *pokecache.Cache
-}
 
 var commands map[string]cliCommand
 
@@ -50,16 +34,21 @@ func initCommands() {
 			description: "Display the names of pokemon encounters in an area",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch <pokemon_name>",
+			description: "Attempts to catch a pokemon",
+			callback:    commandCatch,
+		},
 	}
 }
 
-func commandExit(cfg *Config, area string) error {
+func commandExit(cfg *Config, target string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(cfg *Config, area string) error {
+func commandHelp(cfg *Config, target string) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println("")

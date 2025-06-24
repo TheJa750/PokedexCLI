@@ -14,6 +14,7 @@ func main() {
 		Next:          nil,
 		Previous:      nil,
 		Cache:         pokecache.NewCache(15 * time.Minute),
+		Pokedex:       make(map[string]Pokemon),
 	}
 
 	startRepl(cfg)
